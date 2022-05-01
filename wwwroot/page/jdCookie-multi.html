@@ -38,6 +38,20 @@
                 }
             },
             methods: {
+                getCookieById: async function(id)  {
+                    var value;
+                    await axios.get('/api/JDCookie/' + id)
+                        .then(function (response) {
+                            value = response;
+                        })
+                        .catch(function (error) {
+                            editCookie.$Notice.error({
+                                title: '请求错误',
+                                desc: error
+                            })
+                        });
+                    return value;
+                },
                 queryString: function (name) {
                     var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
                     var r = window.location.search.substr(1).match(reg);
@@ -78,10 +92,9 @@
                             }
                             var count = 0;
                             for (var i = 0; i < editCookie.ids.length; i++) {
-                                var ck = {
-                                    Id: editCookie.ids[i],
-                                    QLPanelCookies: panel
-                                }
+                                var ck = await editCookie.getCookieById(editCookie.ids[i]);
+                                ck.QLPanelCookies =  panel
+                                console.log(ck)
                                 await axios.put('/api/JDCookie', ck)
                                     .then(function () {
                                         count ++;
@@ -110,7 +123,6 @@
             },
             mounted() {
                 this.ids = this.queryString("ids").split(",");
-                console.log(this.ids)
                 this.getPanels();
             }
         });
