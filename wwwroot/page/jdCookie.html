@@ -50,8 +50,8 @@
                     <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="Sync"> Cookie同步 </button>
                     <button class="layui-btn layui-btn-normal layui-btn-sm data-enable-btn" lay-event="enable"> 启用 </button>
                     <button class="layui-btn layui-btn-normal layui-btn-sm data-disable-btn" lay-event="disable"> 禁用 </button>
-
                     <button class="layui-btn layui-btn-danger layui-btn-sm data-delete-btn" lay-event="delete"> 删除 </button>
+                    <button class="layui-btn layui-btn-normal layui-btn-sm data-multi-btn" lay-event="multi"> 批量分配容器 </button>
                 </div>
             </script>
             <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
@@ -86,7 +86,7 @@
                         cols: [[
                             { type: "checkbox", width: 50 },
                             {
-                                field: 'ContainerName', width: 130, title: '青龙容器', sort: true, templet(d) {
+                                field: 'ContainerName', width: 160, title: '青龙容器', sort: true, templet(d) {
                                     var names = "";
                                     for (var i = 0; i < d.QLPanelCookies.length; i++) {
                                         if (i < d.QLPanelCookies.length - 1) {
@@ -113,15 +113,9 @@
                                     return "未绑定";
                                 }
                             },
-                            {
-                                field: 'Priority', title: '权重', sort: true,
-                                width: 80
-                            },
-                            { field: 'nickname', title: '昵称', width: 120 },
-                            //{
-                            //    field: 'beanNum', title: '京豆', sort: true,
-                            //    width: 90
-                            //},
+                            {field: 'Priority', title: '权重', sort: true, width: 80},
+                            { field: 'nickname', title: '昵称', width: 180 },
+                            { field: 'Remark', title: '备注', sort: true, width: 180 },
                             {
                                 field: 'Available', title: '可用', sort: true, templet(d) {
                                     return d.Available ? "是" : "否";
@@ -129,23 +123,13 @@
                                 width: 80
                             },
                             {
-                                field: 'Remark', title: '备注', sort: true,
-                                width: 120
-                            },
-                            {
                                 field: 'CreateTime', title: '添加时间',
                                 width: 150
                             },
-                            //{
-                            //    field: 'Top', title: '置顶', sort: true, templet(d) {
-                            //        return `<a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="top">${d.Top ? "取消" : "置顶"}</a>`
-                            //    },
-                            //    width: 80
-                            //},
                             { title: '操作', width: 90, toolbar: '#currentTableBar', align: "center" }
                         ]],
-                        limits: [10, 15, 20, 25, 50, 100],
-                        limit: 20,
+                        limits: [10, 15, 20, 25, 50, 100, 200],
+                        limit: 10,
                         page: true,
                         skin: 'line',
                         data: data,
@@ -191,20 +175,38 @@
                             });
                         });
                     }
-                } else if (obj.event === 'enable') {  // 监听删除操作
+                } else if (obj.event === 'enable') {  // 监听启用操作
                     var ids = getSelectId(".data-enable-btn")
                     if (ids.length > 0) {
                         layer.confirm('确定启用选中的账号吗？', function (index) {
                             UpdateEnable(ids, true);
                         });
                     }
-                } else if (obj.event === 'disable') {  // 监听删除操作
+                } else if (obj.event === 'disable') {  // 监听禁用操作
                     var ids = getSelectId(".data-disable-btn")
                     if (ids.length > 0) {
                         layer.confirm('确定禁用选中的账号吗？', function (index) {
                             UpdateEnable(ids, false);
                             layer.close(index);
                         });
+                    }
+                } else if (obj.event === 'multi') {  // 监听批量分配容器操作
+                    var ids = getSelectId(".data-multi-btn")
+                    if (ids.length > 0) {
+                        var index = layer.open({
+                            title: '批量分配容器',
+                            type: 2,
+                            shade: 0.2,
+                            maxmin: true,
+                            shadeClose: true,
+                            area: ['800px', '400px'],
+                            content: 'jdCookie-multi.html?id=' + data.Id,
+                            end: initTable
+                        });
+                        $(window).on("resize", function () {
+                            layer.full(index);
+                        });
+                        return false;
                     }
                 }
             });
@@ -255,18 +257,6 @@
                         });
                     });
                 }
-                //else if (obj.event === 'top') {
-                //    layer.confirm('真的要' + (data.Top ? "置顶" : "取消置顶") + '吗？', function (index) {
-                //        common.ajax(`/JDCookie/top/${data.Id}/${!data.Top}`, "get", {}, function (data111) {
-                //            var message = "置顶成功，开卡无忧！";
-                //            if (data.Top) {
-                //                message = "取消置顶完成！"
-                //            }
-                //            layer.msg(message, { icon: 6 });
-                //            initTable();
-                //        });
-                //    });
-                //}
             });
         });
     </script>
