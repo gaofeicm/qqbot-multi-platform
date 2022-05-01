@@ -77,9 +77,9 @@
                                 });
                             }
                             var count = 0;
-                            for (var i = 0; i < ids.length; i++) {
+                            for (var i = 0; i < editCookie.ids.length; i++) {
                                 var ck = {
-                                    Id: ids[i],
+                                    Id: editCookie.ids[i],
                                     QLPanelCookies: panel
                                 }
                                 await axios.put('/api/JDCookie', ck)
