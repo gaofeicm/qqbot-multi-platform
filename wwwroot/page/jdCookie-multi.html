@@ -71,7 +71,6 @@
                                     });
                                 }
                             }
-                            console.log(editCookie.AllPanels)
                         })
                         .catch(function (error) {
                             editCookie.$Notice.error({
@@ -94,7 +93,6 @@
                             for (var i = 0; i < editCookie.ids.length; i++) {
                                 var ck = await editCookie.getCookieById(editCookie.ids[i]);
                                 ck.QLPanelCookies =  panel
-                                console.log(ck)
                                 await axios.put('/api/JDCookie', ck)
                                     .then(function () {
                                         count ++;
